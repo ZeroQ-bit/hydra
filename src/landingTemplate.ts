@@ -277,11 +277,9 @@ export function landingTemplate(manifest: CustomManifest) {
       const updateLink = () => {
         const config = Object.fromEntries(new FormData(mainForm))
         config.mediaFlowProxyUrl = config.mediaFlowProxyUrl.replace(/^https?.\\/\\//, '');
-        // When using localhost / 127.0.0.1, omit stremio:// to let the browser handle it securely
-        // or let the user click Stremio's native interception dialog.
-        const isLocal = window.location.host.includes('127.0.0.1') || window.location.host.includes('localhost');
-        const prefix = isLocal ? window.location.protocol + '//' : 'stremio://';
-        installLink.href = prefix + window.location.host + '/' + encodeURIComponent(JSON.stringify(config)) + '/manifest.json'
+        // Always use stremio:// for the install button, regardless of localhost or not.
+        // We will instead strip http/https if the browser has added it locally for port support
+        installLink.href = 'stremio://' + window.location.host + '/' + encodeURIComponent(JSON.stringify(config)) + '/manifest.json'
       }
       const testApiKey = async (keyId) => {
         const input = document.getElementById(keyId);
@@ -386,9 +384,7 @@ export function landingTemplate(manifest: CustomManifest) {
       if (typeof updateLink === 'function')
         updateLink()
       else {
-        const isLocal = window.location.host.includes('127.0.0.1') || window.location.host.includes('localhost');
-        const prefix = isLocal ? window.location.protocol + '//' : 'stremio://';
-        installLink.href = prefix + window.location.host + '/manifest.json'
+        installLink.href = 'stremio://' + window.location.host + '/manifest.json'
       }
 
       const copyBtn = document.getElementById('copyLinkBtn');
@@ -396,7 +392,7 @@ export function landingTemplate(manifest: CustomManifest) {
         copyBtn.onclick = (e) => {
           e.preventDefault();
           if (typeof mainForm !== 'undefined' && mainForm && !mainForm.reportValidity()) return;
-          const targetHref = installLink.href || (window.location.protocol + '//' + window.location.host + '/manifest.json');
+          const targetHref = installLink.href || ('stremio://' + window.location.host + '/manifest.json');
           const finalLink = targetHref.replace(/^stremio:\\/\\//, window.location.protocol + '//');
           
           if (navigator.clipboard) {
