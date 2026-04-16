@@ -3,6 +3,7 @@ import winston from 'winston';
 import { Context, Format, Meta, UrlResult } from '../types';
 import { createKeyvSqlite, envGet, isExtractorDisabled } from '../utils';
 import { Extractor } from './Extractor';
+import { AIFactory } from '../ai';
 
 export class ExtractorRegistry {
   private readonly logger: winston.Logger;
@@ -78,7 +79,27 @@ export class ExtractorRegistry {
     this.logger.info(`Extract ${url} using ${extractor.id} extractor`, ctx);
 
     const mergedMeta: Meta = { ...meta, ...lazyUrlResults[0]?.meta };
-    const urlResults = await extractor.extract(ctx, normalizedUrl, { extractorId: extractor.id, ...mergedMeta });
+    let urlResults = await extractor.extract(ctx, normalizedUrl, { extractorId: extractor.id, ...mergedMeta });
+
+    const aiProvider = AIFactory.getProvider(this.logger, ctx.config);
+    if (urlResults.length === 0 && aiProvider) {
+      this.logger.info(`[AI Tracker] ${extractor.label} returned 0 results. Firing AI fallback...`, ctx);
+      try {
+        const aiUrl = await aiProvider.extractVideoUrl('', normalizedUrl.href); // Currently uses blank HTML payload mapping, TODO: Expand Fetcher injects
+        if (aiUrl) {
+          urlResults = [{
+            url: new URL(aiUrl),
+            format: Format.unknown,
+            isExternal: false,
+            label: `${extractor.label} (AI Healed)`,
+            ttl: extractor.ttl,
+            meta: mergedMeta,
+          }];
+        }
+      } catch (err) {
+        this.logger.error(`[AI Tracker] AI extraction failed for ${normalizedUrl.href}`, ctx);
+      }
+    }
 
     if (!Object.keys(mergedMeta).length || urlResults.some(urlResult => urlResult.error)) {
       await this.urlResultCache.delete(cacheKey);

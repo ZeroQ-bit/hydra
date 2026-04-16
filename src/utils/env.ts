@@ -11,9 +11,9 @@ export const envGetRequired = (name: string): string => {
   return value;
 };
 
-export const envGetAppId = (): string => process.env['MANIFEST_ID'] || 'webstreamr';
+export const envGetAppId = (): string => process.env['MANIFEST_ID'] || 'hydra';
 
-export const envGetAppName = (): string => process.env['MANIFEST_NAME'] || 'WebStreamr';
+export const envGetAppName = (): string => process.env['MANIFEST_NAME'] || 'Hydra';
 
 export const envIsProd = (): boolean => process.env['NODE_ENV'] === 'production';
 

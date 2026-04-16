@@ -16,7 +16,7 @@ const typedEntries = <T extends object>(obj: T): [keyof T, T[keyof T]][] => (Obj
 export const buildManifest = (sources: Source[], extractors: Extractor[], config: Config): CustomManifest => {
   const manifest: CustomManifest = {
     id: envGetAppId(),
-    version: '0.69.1', // x-release-please-version
+    version: '1.0.0', // x-release-please-version
     name: envGetAppName(),
     description: 'Provides HTTP URLs from streaming websites. Configure add-on for additional languages. Add MediaFlow proxy for more URLs.',
     resources: [
@@ -28,7 +28,7 @@ export const buildManifest = (sources: Source[], extractors: Extractor[], config
     ],
     catalogs: [],
     idPrefixes: ['tmdb:', 'tt'],
-    logo: 'https://emojiapi.dev/api/v1/spider_web/256.png',
+    logo: `${process.env['PROTOCOL'] || 'http'}://${process.env['HOST']}/logo-transparent.png`,
     behaviorHints: {
       p2p: false,
       configurable: true,
@@ -96,6 +96,20 @@ export const buildManifest = (sources: Source[], extractors: Extractor[], config
     type: 'password',
     title: 'MediaFlow Proxy Password',
     default: config['mediaFlowProxyPassword'] ?? '',
+  });
+
+  manifest.config.push({
+    key: 'openAiApiKey',
+    type: 'password',
+    title: 'OpenAI API Key',
+    default: config['openAiApiKey'] ?? '',
+  });
+
+  manifest.config.push({
+    key: 'geminiApiKey',
+    type: 'password',
+    title: 'Gemini API Key',
+    default: config['geminiApiKey'] ?? '',
   });
 
   RESOLUTIONS.forEach((resolution) => {

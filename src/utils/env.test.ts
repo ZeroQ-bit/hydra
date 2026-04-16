@@ -15,18 +15,18 @@ describe('env', () => {
   });
 
   test('envGetAppId', () => {
-    expect(envGetAppId()).toBe('webstreamr');
+    expect(envGetAppId()).toBe('hydra');
 
-    process.env['MANIFEST_ID'] = 'webstreamr.dev';
-    expect(envGetAppId()).toBe('webstreamr.dev');
+    process.env['MANIFEST_ID'] = 'hydra.dev';
+    expect(envGetAppId()).toBe('hydra.dev');
     delete process.env['MANIFEST_ID'];
   });
 
   test('envGetAppName', () => {
-    expect(envGetAppName()).toBe('WebStreamr');
+    expect(envGetAppName()).toBe('Hydra');
 
-    process.env['MANIFEST_NAME'] = 'WebStreamr | dev';
-    expect(envGetAppName()).toBe('WebStreamr | dev');
+    process.env['MANIFEST_NAME'] = 'Hydra | dev';
+    expect(envGetAppName()).toBe('Hydra | dev');
     delete process.env['MANIFEST_NAME'];
   });
 
@@ -41,6 +41,6 @@ describe('env', () => {
 
   test('isElfHostedInstancce', () => {
     expect(isElfHostedInstance({ host: 'someuser.elfhosted.com' } as Request)).toBeTruthy();
-    expect(isElfHostedInstance({ host: 'webstreamr.hayd.uk' } as Request)).toBeFalsy();
+    expect(isElfHostedInstance({ host: 'hydra.hayd.uk' } as Request)).toBeFalsy();
   });
 });

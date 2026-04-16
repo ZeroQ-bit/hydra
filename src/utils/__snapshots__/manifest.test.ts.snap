@@ -97,6 +97,18 @@ exports[`buildManifest default manifest 1`] = `
       "type": "password",
     },
     {
+      "default": "",
+      "key": "openAiApiKey",
+      "title": "OpenAI API Key",
+      "type": "password",
+    },
+    {
+      "default": "",
+      "key": "geminiApiKey",
+      "title": "Gemini API Key",
+      "type": "password",
+    },
+    {
       "key": "excludeResolution_2160p",
       "title": "Exclude resolution 2160p",
       "type": "checkbox",
@@ -154,13 +166,13 @@ Supported languages: Albanian, German, Castilian Spanish, French, Gujarati, Hind
 Supported sources: 4KHDHub, CineHDPlus, Cuevana, Einschalten, Eurostreaming, Frembed, FrenchCloud, HDHub4u, HomeCine, KinoGer, Kokoshka, MegaKino, MeineCloud, MostraGuarda, Movix, RgShows, StreamKiste, VerHdLink, VidSrc, VixSrc
 
 Supported extractors: ",
-  "id": "webstreamr",
+  "id": "hydra",
   "idPrefixes": [
     "tmdb:",
     "tt",
   ],
-  "logo": "https://emojiapi.dev/api/v1/spider_web/256.png",
-  "name": "WebStreamr",
+  "logo": "https://example.test/logo-transparent.png",
+  "name": "Hydra",
   "resources": [
     "stream",
   ],
@@ -198,6 +210,18 @@ exports[`buildManifest disable extractors 1`] = `
     "default": "",
     "key": "mediaFlowProxyPassword",
     "title": "MediaFlow Proxy Password",
+    "type": "password",
+  },
+  {
+    "default": "",
+    "key": "openAiApiKey",
+    "title": "OpenAI API Key",
+    "type": "password",
+  },
+  {
+    "default": "",
+    "key": "geminiApiKey",
+    "title": "Gemini API Key",
     "type": "password",
   },
   {
@@ -289,6 +313,18 @@ exports[`buildManifest has checked excludeResolution_2160p 1`] = `
     "type": "password",
   },
   {
+    "default": "",
+    "key": "openAiApiKey",
+    "title": "OpenAI API Key",
+    "type": "password",
+  },
+  {
+    "default": "",
+    "key": "geminiApiKey",
+    "title": "Gemini API Key",
+    "type": "password",
+  },
+  {
     "default": "checked",
     "key": "excludeResolution_2160p",
     "title": "Exclude resolution 2160p",
@@ -368,6 +404,18 @@ exports[`buildManifest has checked includeExternalUrls 1`] = `
     "type": "password",
   },
   {
+    "default": "",
+    "key": "openAiApiKey",
+    "title": "OpenAI API Key",
+    "type": "password",
+  },
+  {
+    "default": "",
+    "key": "geminiApiKey",
+    "title": "Gemini API Key",
+    "type": "password",
+  },
+  {
     "key": "excludeResolution_2160p",
     "title": "Exclude resolution 2160p",
     "type": "checkbox",
@@ -443,6 +491,18 @@ exports[`buildManifest has checked showErrors 1`] = `
     "default": "",
     "key": "mediaFlowProxyPassword",
     "title": "MediaFlow Proxy Password",
+    "type": "password",
+  },
+  {
+    "default": "",
+    "key": "openAiApiKey",
+    "title": "OpenAI API Key",
+    "type": "password",
+  },
+  {
+    "default": "",
+    "key": "geminiApiKey",
+    "title": "Gemini API Key",
     "type": "password",
   },
   {
@@ -537,6 +597,18 @@ exports[`buildManifest has checked source with appropriate config 1`] = `
     "default": "",
     "key": "mediaFlowProxyPassword",
     "title": "MediaFlow Proxy Password",
+    "type": "password",
+  },
+  {
+    "default": "",
+    "key": "openAiApiKey",
+    "title": "OpenAI API Key",
+    "type": "password",
+  },
+  {
+    "default": "",
+    "key": "geminiApiKey",
+    "title": "Gemini API Key",
     "type": "password",
   },
   {
@@ -642,6 +714,18 @@ exports[`buildManifest has unchecked source without a config 1`] = `
     "type": "password",
   },
   {
+    "default": "",
+    "key": "openAiApiKey",
+    "title": "OpenAI API Key",
+    "type": "password",
+  },
+  {
+    "default": "",
+    "key": "geminiApiKey",
+    "title": "Gemini API Key",
+    "type": "password",
+  },
+  {
     "key": "excludeResolution_2160p",
     "title": "Exclude resolution 2160p",
     "type": "checkbox",
@@ -716,6 +800,18 @@ exports[`buildManifest showErrors and includeExternalUrls are unchecked by defau
     "default": "",
     "key": "mediaFlowProxyPassword",
     "title": "MediaFlow Proxy Password",
+    "type": "password",
+  },
+  {
+    "default": "",
+    "key": "openAiApiKey",
+    "title": "OpenAI API Key",
+    "type": "password",
+  },
+  {
+    "default": "",
+    "key": "geminiApiKey",
+    "title": "Gemini API Key",
     "type": "password",
   },
   {

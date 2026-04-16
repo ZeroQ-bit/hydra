@@ -207,9 +207,17 @@ export class Fetcher {
       await this.trackHttpStatus(ctx, url, 0);
       this.logger.info(`Got error ${error} for ${url}`, ctx);
 
-      if (error instanceof AxiosError && error.code === 'ECONNABORTED') {
+      if (error instanceof AxiosError && ['ECONNABORTED', 'ECONNRESET', 'ETIMEDOUT', 'ENOTFOUND', 'EHOSTUNREACH'].includes(error.code ?? '')) {
         await this.increaseTimeoutsCount(url);
-        throw new TimeoutError(url);
+        
+        if (tryCount < 3) {
+          const backoff = Math.pow(2, tryCount) * 1000 + Math.random() * 500; // exponential backoff with jitter
+          this.logger.warn(`Got ${error.code} for ${url}, retrying after ${Math.round(backoff)}ms (attempt ${tryCount + 1})`, ctx);
+          await this.sleep(backoff);
+          return await this.fetchWithTimeout(ctx, url, requestConfig, tryCount + 1);
+        }
+
+        if (error.code === 'ECONNABORTED') throw new TimeoutError(url);
       }
 
       throw error;
@@ -221,14 +229,24 @@ export class Fetcher {
     await this.decreaseTimeoutsCount(url);
 
     if (response.status === 429) {
-      const retryAfter = parseInt(`${response.headers['retry-after']}`) * 1000;
-      if (retryAfter <= this.MAX_WAIT_RETRY_AFTER && tryCount < 1) {
-        this.logger.info(`Wait out rate limit for ${url.host}`, ctx);
+      const retryAfterStr = response.headers['retry-after'];
+      const retryAfter = retryAfterStr ? parseInt(`${retryAfterStr}`) * 1000 : (Math.pow(2, tryCount) * 1000 + Math.random() * 500);
+
+      if (retryAfter <= this.MAX_WAIT_RETRY_AFTER && tryCount < 3) {
+        this.logger.info(`Wait out rate limit for ${url.host} (${Math.round(retryAfter)}ms, attempt ${tryCount + 1})`, ctx);
 
         await this.sleep(retryAfter);
 
-        return await this.fetchWithTimeout(ctx, url, { ...requestConfig, queueLimit: 1 }, ++tryCount);
+        return await this.fetchWithTimeout(ctx, url, { ...requestConfig, queueLimit: 1 }, tryCount + 1);
       }
+    }
+
+    if (response.status >= 500 && response.status <= 599 && tryCount < 3) {
+      const backoff = Math.pow(2, tryCount) * 1000 + Math.random() * 500;
+      this.logger.warn(`Got ${response.status} from ${url.host}, retrying after ${Math.round(backoff)}ms (attempt ${tryCount + 1})`, ctx);
+      
+      await this.sleep(backoff);
+      return await this.fetchWithTimeout(ctx, url, requestConfig, tryCount + 1);
     }
 
     const triggeredCloudflareTurnstile = 'cf-turnstile' in response.headers;
@@ -412,7 +430,11 @@ export class Fetcher {
         }
       }
     } else if (process.env['ALL_PROXY']) {
-      return new URL(process.env['ALL_PROXY']);
+      const proxies = process.env['ALL_PROXY'].split(',').map(p => p.trim()).filter(Boolean);
+      if (proxies.length > 0) {
+        const randomProxy = proxies[Math.floor(Math.random() * proxies.length)];
+        return randomProxy ? new URL(randomProxy) : undefined;
+      }
     }
 
     return undefined;

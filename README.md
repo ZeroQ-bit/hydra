@@ -1,37 +1,35 @@
-# WebStreamr
+# Hydra
 
-[![Tests](https://github.com/webstreamr/webstreamr/actions/workflows/tests.yml/badge.svg)](https://github.com/webstreamr/webstreamr/actions/workflows/tests.yml)
-[![GitHub release](https://img.shields.io/github/v/release/webstreamr/webstreamr)](https://github.com/webstreamr/webstreamr/releases)
-![GitHub License](https://img.shields.io/github/license/webstreamr/webstreamr)
+[![Tests](https://github.com/zainulnazir/hydra/actions/workflows/tests.yml/badge.svg)](https://github.com/zainulnazir/hydra/actions/workflows/tests.yml)
+[![GitHub release](https://img.shields.io/github/v/release/zainulnazir/hydra)](https://github.com/zainulnazir/hydra/releases)
 
-[Stremio](https://www.stremio.com/) add-on which provides HTTP URLs from streaming websites.
+[Stremio](https://www.stremio.com/) add-on which provides HTTP URLs from streaming websites. This is a significantly enhanced and rebranded version of the original webstreamer project.
 
-HTTP streams have limitations.
-For a better experience, I'd advise using a Debrid service and WebStreamr as fallback.
-[TorBox](https://torbox.app/subscription?referral=f22eb00d-27ce-4e20-85fc-68da3d018b99) is working very well.
+Hydra introduces next-generation features including **Automated Extractor Verification**, **Intelligent Distributed Caching** via Redis, **High-Concurrency Fetching (Proxies & Retries)**, and revolutionary **AI Capabilities (Gemini & OpenAI integration)** for resilient DOM extraction and prioritization!
 
-## Public instance
+## Key Features
 
-A public instance is available at https://webstreamr.hayd.uk. Hosting infrastructure for this instance is donated by [ElfHosted](https://elfhosted.com), and independently maintained by [Hayduk](https://hayd.uk).
+- **AI-Powered Fallback**: Enter your own Gemini or OpenAI API keys on the configuration page. If our native extractors fail to parse the streaming sources, the AI agent dynamically steps in to analyze the DOM and recover the stream links.
+- **Intelligent Distributed Caching**: Backed by Redis to drastically improve response times globally and reduce load on streaming providers.
+- **Concurrent & Resilient Architecture**: Uses smart proxying, retries, and high-concurrency requests to pull in links faster than ever.
+- **Modern Configuration UI**: A newly designed glassmorphism setup page to cleanly configure your Stremio Add-On experience.
+- **Automated Extractor Verification**: Constant background verification to ensure our supported streaming hosters remain operational.
 
 ## Known issues / limitations
 
-- PixelServer / pixeldrain has a daily limit of 6 GB per IP: https://pixeldrain.dev
-- Dropload and SuperVideo on Android do not work because Stremio does not use the `Referer` header properly via HLS playlists: https://github.com/Stremio/stremio-bugs/issues/2389, maybe https://github.com/Stremio/stremio-bugs/issues/1579
-- MediaFlow proxy has to be used in an inefficient way because Stremio on Android or its players cannot deal with HLS playlist with redirects: https://github.com/Stremio/stremio-bugs/issues/1574
-- FlareSolverr cookies cannot be used because Cloudflare does techniques like TLS fingerprinting most likely. But FlareSolverr uses a session per host and should be quick.
-- VidSrc works but rate limits heavily and is therefore only queried as fallback if nothing else is found.
-- RgShows detects shared usage and blocks IPs. It therefore only works on private instances.
+- PixelServer / pixeldrain has a daily limit of 6 GB per IP.
+- Dropload and SuperVideo on Android do not work because Stremio does not use the `Referer` header properly via HLS playlists.
+- MediaFlow proxy has to be used in an inefficient way because Stremio on Android or its players cannot deal with HLS playlist with redirects.
+- FlareSolverr cookies cannot be used due to TLS fingerprinting, but FlareSolverr uses a session per host to speed things up.
+- VidSrc works but rate limits heavily and is therefore only queried as fallback.
+- RgShows detects shared usage and blocks IPs. It therefore mainly works on private instances.
 
 ## MediaFlow Proxy
 
-[MediaFlow Proxy](https://github.com/mhdzumair/mediaflow-proxy/) can be added when configuration the add-on to gain access to a couple of more file hosters.
-It depends highly on the language / source used if that unlocks more streams or not.
-
-MediaFlow proxy is needed because some hosters ip-lock streams and the add-on does not run on the same device that will stream the video.
+[MediaFlow Proxy](https://github.com/mhdzumair/mediaflow-proxy/) can be added when configuring the add-on to gain access to more file hosters.
+It is needed because some hosters ip-lock streams, and the add-on does not run on the same device streaming the video.
 
 The following hosters can be used only with MediaFlow Proxy:
-
 - Fastream
 - FileLions
 - FileMoon
@@ -40,78 +38,39 @@ The following hosters can be used only with MediaFlow Proxy:
 - Streamtape
 - VOE
 
-MediaFlow proxy can either be self-hosted or acquired via bundle from [ElfHosted](https://docs.elfhosted.com/app/mediaflow-proxy/).
-
 ## Hosting
 
-Don't want to use the public instance, or concerned about reliability during periods of high use? It's open-source, you can host it yourself!
+Don't want to use the public instance? It's open-source, you can host it yourself!
 
-### ElfHosted (easy mode)
+### Self-Hosting (Docker)
 
-Self-hosting to stressful? ElfHosted offer [ready-to-go, turn-key WebStreamr instances](https://store.elfhosted.com/product/webstreamr/) with $1, 7-day trials. Additionally, 33% of your subscription directly supports your developer! ❤️
+You can run the latest Hydra via Docker:
 
-(*ElfHosted also offer advanced private hosting of the [top Stremio Addons](https://store.elfhosted.com/product-category/stremio-addons/elf/webstreamr/), as well as [turn-key bundles providing streaming from RealDebrid with Plex, Emby, or Jellyfin](https://store.elfhosted.com/product-category/streaming-bundles/elf/webstreamr/)*)
-
-### Self-Hosting
-
-You can run the latest WebStreamr via Docker. E.g.
-
-```shell
+\`\`\`shell
  docker run \
     --detach=true \
-    --name webstreamr \
+    --name hydra \
     --rm \
     --pull always \
     --publish 51546:51546 \
-    --env TMDB_ACCESS_TOKEN="YOUR_TOKEN" \
+    --env REDIS_URL="redis://your-redis-host:6379" \
     --volume /tmp:/tmp \
-    webstreamr/webstreamr
-```
+    zainulnazir/hydra
+\`\`\`
 
-### Environment variables
+### Environment Configuration
+
+#### `REDIS_URL`
+Optional (but recommended). The connection string to your Redis cache server.
+
+#### `GEMINI_API_KEY` / `OPENAI_API_KEY`
+Optional. Global system AI keys for the native fallback extraction framework. Note: Users can also provide their personal API keys directly on the `/configure` setup page!
 
 #### `CACHE_DIR`
-
-Optional. Directory for persistent caches using SQLite files. Default: OS tmp dir.
-
-#### `CONFIGURATION_DESCRIPTION`
-
-Optional. To customize the description shown on the configuration page.
-
-#### `DISABLED_EXTRACTORS`
-
-Optional. Comma separated list of extractors which should be disabled. E.g. `doodstream,vidsrc`
-
-#### `DISABLED_SOURCES`
-
-Optional. Comma separated list of sources which should be disabled. E.g. `frembed,vidsrc`
+Optional. Directory for persistent caches using SQLite files (if not using Redis). Default: OS tmp dir.
 
 #### `FLARESOLVERR_ENDPOINT`
+Optional. If domains show Cloudflare challenges, FlareSolverr can be used to work around them. E.g. `http://flaresolverr:8191`.
 
-Optional. If domains show Cloudflare challenges, FlareSolverr can be used to work around them. E.g. `http://flaresolverr:8191`
-Proxy configuration is passed-through and only a single session is used to save resources. Byparr is not supported.
-
-#### `MANIFEST_ID`
-
-Optional. Add-on manifest ID. Default: `webstreamr`
-
-#### `MANIFEST_NAME`
-
-Optional. Add-on manifest name. Default: `WebStreamr`
-
-#### `PORT`
-
-Optional. Port of the node web server. Default: `51546`
-
-#### `PROXY_CONFIG`
-
-Optional. Proxies which should be used based on domain. Supports minimatch. E.g. `dood.to:http://USERNAME:PASSWORD@IP:PORT,*:socks5://172.17.0.1:1080` would use an http proxy for dood.to and a socks5 proxy for all other domains.
-
-Some hosters are a bit picky when it comes to IPs. Best case is if you use a residential IP.
-If you can't do that, then I suggest to use a VPN / proxy like Cloudflare WARP.
-DoodStream is not working with WARP.
-Free Webshare proxies seem to work with it.
-
-#### `TMDB_ACCESS_TOKEN`
-
-**Required**. TMDB access token to get information like title and year for content. Use the [API Read Access Token](https://www.themoviedb.org/settings/api).
+#### `DISABLED_EXTRACTORS` / `DISABLED_SOURCES`
+Optional. Comma separated list of extractors or sources which should be disabled.

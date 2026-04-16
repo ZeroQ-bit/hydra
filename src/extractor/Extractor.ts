@@ -13,6 +13,8 @@ export abstract class Extractor {
 
   public readonly viaMediaFlowProxy: boolean = false;
 
+  public readonly testUrls?: string[] = undefined;
+
   protected readonly fetcher: Fetcher;
 
   public constructor(fetcher: Fetcher) {

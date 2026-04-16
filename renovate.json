@@ -5,7 +5,7 @@
     ":maintainLockFilesWeekly",
     ":rebaseStalePrs"
   ],
-  "assignees": ["webstreamr"],
+  "assignees": ["hydra"],
   "configMigration": true,
   "osvVulnerabilityAlerts": true,
   "postUpdateOptions": [

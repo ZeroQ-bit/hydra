@@ -16,156 +16,186 @@ html {
 }
 
 body {
-  padding: 2vh;
-  font-size: 2.2vh;
+  padding: 4vh 2vh;
+  font-size: 2vh;
+  background-color: #0f0f13;
+  color: #f1f1f1;
+  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 html {
-  background-size: auto 100%;
   background-size: cover;
   background-position: center center;
+  background-attachment: fixed;
   background-repeat: no-repeat;
-  box-shadow: inset 0 0 0 2000px rgb(0 0 0 / 60%);
 }
 
-body {
-  display: flex;
-  font-family: 'Open Sans', Arial, sans-serif;
-  color: white;
+/* Glassmorphism Card Effect */
+#addon {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  background: rgba(20, 20, 25, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 4vh 5vh;
+  border-radius: 2vh;
+  box-shadow: 0 2vh 4vh rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
 }
 
 h1 {
-  font-size: 4.5vh;
+  font-size: 4vh;
   font-weight: 700;
+  margin: 0 0 0.5vh 0;
+  letter-spacing: -0.02em;
 }
 
-h2 {
-  font-size: 2.2vh;
-  font-weight: normal;
-  font-style: italic;
-  opacity: 0.8;
+h2.version {
+  font-size: 1.8vh;
+  font-weight: 400;
+  color: #a0a0b0;
+  margin: 0 0 3vh 0;
 }
 
 h3 {
   font-size: 2.2vh;
+  margin-top: 3vh;
+  margin-bottom: 1.5vh;
+  font-weight: 600;
 }
 
-h1,
-h2,
-h3,
-p {
-  margin: 0;
-  text-shadow: 0 0 1vh rgba(0, 0, 0, 0.15);
-}
-
-p {
+p, .description {
   font-size: 1.75vh;
+  line-height: 1.6;
+  opacity: 0.9;
+  text-align: left;
+  margin: 0 0 2vh 0;
 }
 
 ul {
   font-size: 1.75vh;
   margin: 0;
-  margin-top: 1vh;
   padding-left: 3vh;
+  text-align: left;
+  opacity: 0.9;
 }
 
 a {
-  color: white
+  color: #a371f7;
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
-a.install-link {
-  text-decoration: none
+a:hover {
+  color: #bfa0ff;
+  text-decoration: underline;
 }
 
 button {
   border: 0;
   outline: 0;
   color: white;
-  background: #8A5AAB;
-  padding: 1.2vh 3.5vh;
-  margin: auto;
+  background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+  padding: 1.5vh 4vh;
+  margin: 3vh auto 1vh auto;
+  border-radius: 1vh;
   text-align: center;
-  font-family: 'Open Sans', Arial, sans-serif;
+  font-family: inherit;
   font-size: 2.2vh;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.05em;
   cursor: pointer;
-  display: block;
-  box-shadow: 0 0.5vh 1vh rgba(0, 0, 0, 0.2);
-  transition: box-shadow 0.1s ease-in-out;
+  display: inline-block;
+  box-shadow: 0 1vh 2vh rgba(99, 102, 241, 0.3);
+  transition: all 0.2s ease-in-out;
+  width: 100%;
 }
 
 button:hover {
-  box-shadow: none;
+  transform: translateY(-2px);
+  box-shadow: 0 1.5vh 2.5vh rgba(99, 102, 241, 0.4);
 }
 
 button:active {
-  box-shadow: 0 0 0 0.5vh white inset;
-}
-
-#addon {
-  width: 40vh;
-  margin: auto;
+  transform: translateY(1px);
+  box-shadow: 0 0.5vh 1vh rgba(99, 102, 241, 0.3);
 }
 
 .logo {
   height: 14vh;
   width: 14vh;
-  margin: auto;
-  margin-bottom: 3vh;
+  margin: 0 auto 2vh auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .logo img {
   width: 100%;
-}
-
-.name, .version {
-  display: inline-block;
-  vertical-align: top;
-}
-
-.name {
-  line-height: 5vh;
-  margin: 0;
-}
-
-.version {
-  position: relative;
-  line-height: 5vh;
-  opacity: 0.8;
-  margin-bottom: 2vh;
-}
-
-.contact {
-  position: absolute;
-  left: 0;
-  bottom: 4vh;
-  width: 100%;
-  text-align: center;
-}
-
-.contact a {
-  font-size: 1.4vh;
-  font-style: italic;
+  object-fit: contain;
 }
 
 .separator {
-  margin-bottom: 4vh;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 3vh 0;
+  width: 100%;
+}
+
+/* Form Styles Override */
+.pure-form {
+  text-align: left;
 }
 
 .form-element {
   margin-bottom: 2vh;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1.5vh;
+  border-radius: 1vh;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .label-to-top {
-  margin-bottom: 2vh;
+  display: block;
+  margin-bottom: 1vh;
+  font-weight: 600;
+  font-size: 1.6vh;
+  color: #e0e0e0;
 }
 
 .label-to-right {
-  margin-left: 1vh !important;
+  margin-left: 1vh;
+  font-size: 1.6vh;
+  cursor: pointer;
 }
 
-.full-width {
+input[type="text"],
+input[type="password"],
+input[type="number"],
+select {
   width: 100%;
+  padding: 1.2vh !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 0.5vh !important;
+  color: white !important;
+  font-family: inherit;
+  font-size: 1.6vh !important;
+  box-shadow: none !important;
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+  transform: scale(1.2);
+  accent-color: #7c3aed;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #a371f7 !important;
+  background: rgba(255, 255, 255, 0.1) !important;
 }
 `;
 
@@ -271,7 +301,7 @@ export function landingTemplate(manifest: CustomManifest) {
       <div class="separator"></div>
 
       <p>
-        The source code can be found on <a href="https://github.com/webstreamr/webstreamr" target="_blank">GitHub</a>.
+        The source code can be found on <a href="https://github.com/zainulnazir/hydra" target="_blank">GitHub</a>.
       </p>
 
       <div class="separator"></div>
@@ -281,7 +311,7 @@ export function landingTemplate(manifest: CustomManifest) {
       <div class="separator"></div>
 
       <p>
-        Note: HTTP streams have limitations. For a better experience, I'd advise using a Debrid service and WebStreamr as fallback.
+        Note: HTTP streams have limitations. For a better experience, I'd advise using a Debrid service and Hydra as fallback.
         <a href="https://torbox.app/subscription?referral=f22eb00d-27ce-4e20-85fc-68da3d018b99" target="_blank"><strong>TorBox</strong></a> is working very well. 
       </p>
 
