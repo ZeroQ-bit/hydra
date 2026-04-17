@@ -8,7 +8,7 @@
 
   [![Tests](https://github.com/zainulnazir/hydra/actions/workflows/tests.yml/badge.svg)](https://github.com/zainulnazir/hydra/actions/workflows/tests.yml)
   [![GitHub release](https://img.shields.io/github/v/release/zainulnazir/hydra)](https://github.com/zainulnazir/hydra/releases)
-  [![Website](https://img.shields.io/badge/Website-hydra.zainulnazir.com-00ffcc)](https://zainulnazir.github.io/hydra/)
+  [![Website](https://img.shields.io/badge/Website-hydra.hapticfeed.tech-00ffcc)](https://hydra.hapticfeed.tech/)
 
 </div>
 
