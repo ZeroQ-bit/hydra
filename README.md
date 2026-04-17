@@ -18,7 +18,7 @@ Hydra is a highly concurrent [Stremio](https://www.stremio.com/) add-on which ag
 
 Hydra introduces next-generation features including **Automated Extractor Verification**, **Intelligent Distributed Caching** via Redis, **High-Concurrency Fetching (Proxies & Retries)**, and revolutionary **AI Capabilities (Gemini & OpenAI integration)** for resilient DOM extraction and stream prioritization!
 
-🌐 **[Visit the Official Hydra Website](https://zainulnazir.github.io/hydra/)**
+🌐 **[Visit the Official Hydra Website](https://hydra.hapticfeed.tech/)**
 
 ## 🐉 Key Features
 
