@@ -907,7 +907,8 @@ export function landingTemplate(manifest: CustomManifest) {
 
     var provider = keyId === 'geminiApiKey' ? 'gemini' : 'openai';
 
-    fetch('/test-ai-key', {
+    var basePath = window.location.pathname.replace(/\/configure\/?$/, '');
+    fetch(basePath + '/test-ai-key', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ provider: provider, key: apiKey })
