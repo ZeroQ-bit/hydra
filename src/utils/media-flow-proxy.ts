@@ -11,7 +11,8 @@ interface ExtractResult {
 export const supportsMediaFlowProxy = (ctx: Context): boolean => !!ctx.config['mediaFlowProxyUrl'];
 
 const buildMediaFlowProxyExtractorUrl = (ctx: Context, host: string, url: URL, headers: Record<string, string>): URL => {
-  const mediaFlowProxyUrl = new URL('/extractor/video', `https://${ctx.config.mediaFlowProxyUrl?.replace(/^https?.\/\//, '')}`);
+  const baseUrl = `https://${ctx.config.mediaFlowProxyUrl?.replace(/^https?:\/\//, '')}`.replace(/\/+$/, '');
+  const mediaFlowProxyUrl = new URL(`${baseUrl}/extractor/video`);
 
   mediaFlowProxyUrl.searchParams.append('host', host);
   mediaFlowProxyUrl.searchParams.append('api_password', `${ctx.config.mediaFlowProxyPassword}`);
