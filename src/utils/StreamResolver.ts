@@ -198,41 +198,56 @@ export class StreamResolver {
   };
 
   private buildName(ctx: Context, urlResult: UrlResult): string {
-    let name = envGetAppName();
-
-    urlResult.meta?.countryCodes?.forEach((countryCode) => {
-      name += ` ${flagFromCountryCode(countryCode)}`;
-    });
-
+    const nameParts = [envGetAppName()];
     if (urlResult.meta?.height) {
-      name += ` ${getClosestResolution(urlResult.meta.height)}`;
+      nameParts.push(getClosestResolution(urlResult.meta.height));
     }
+
+    nameParts.push(...this.buildCountryFlags(urlResult));
 
     if (urlResult.isExternal && showExternalUrls(ctx.config)) {
-      name += ` ⚠️ external`;
+      nameParts.push('⚠️ external');
     }
 
-    return name;
+    return nameParts.join(' ');
   };
 
   private buildTitle(ctx: Context, urlResult: UrlResult): string {
-    const titleLines = [];
+    const titleLines: string[] = [];
 
     if (urlResult.meta?.title) {
       titleLines.push(urlResult.meta.title);
     }
 
     const titleDetailsLine = [];
+    if (urlResult.meta?.height) {
+      titleDetailsLine.push(`📺 ${getClosestResolution(urlResult.meta.height)}`);
+    }
+    if (urlResult.format !== Format.unknown) {
+      titleDetailsLine.push(`🧩 ${urlResult.format.toUpperCase()}`);
+    }
     if (urlResult.meta?.bytes) {
       titleDetailsLine.push(`💾 ${bytes.format(urlResult.meta.bytes, { unitSeparator: ' ' })}`);
     }
-    const sourceLabel = urlResult.meta?.sourceLabel;
-    if (sourceLabel && sourceLabel !== urlResult.label) {
-      titleDetailsLine.push(`🔗 ${urlResult.label} from ${urlResult.meta?.sourceLabel}`);
-    } else {
-      titleDetailsLine.push(`🔗 ${urlResult.label}`);
+    const countryFlags = this.buildCountryFlags(urlResult);
+    if (countryFlags.length) {
+      titleDetailsLine.push(countryFlags.join(' '));
     }
-    titleLines.push(titleDetailsLine.join(' '));
+    if (urlResult.isExternal && showExternalUrls(ctx.config)) {
+      titleDetailsLine.push('⚠️ External');
+    }
+    if (titleDetailsLine.length) {
+      titleLines.push(titleDetailsLine.join(' • '));
+    }
+
+    const sourceDetailsLine = [];
+    if (urlResult.meta?.sourceLabel) {
+      sourceDetailsLine.push(`Source: ${urlResult.meta.sourceLabel}`);
+    }
+    sourceDetailsLine.push(`Host: ${urlResult.label}`);
+    if (sourceDetailsLine.length) {
+      titleLines.push(`🔗 ${sourceDetailsLine.join(' • ')}`);
+    }
 
     if (urlResult.error) {
       titleLines.push(logErrorAndReturnNiceString(ctx, this.logger, urlResult.meta?.sourceId ?? '', urlResult.error));
@@ -240,4 +255,8 @@ export class StreamResolver {
 
     return titleLines.join('\n');
   };
+
+  private buildCountryFlags(urlResult: UrlResult): string[] {
+    return (urlResult.meta?.countryCodes ?? []).map(countryCode => flagFromCountryCode(countryCode));
+  }
 }
