@@ -79,6 +79,9 @@ Optional (but recommended). The connection string to your Redis cache server.
 #### `GEMINI_API_KEY` / `OPENAI_API_KEY`
 Optional. Global system AI keys for the native fallback extraction framework. Note: Users can also provide their personal API keys directly on the `/configure` setup page!
 
+#### `GEMINI_MODEL`
+Optional. Overrides the Gemini model used for AI extraction and Gemini API key testing. Default: `gemini-2.5-flash`.
+
 #### `CACHE_DIR`
 Optional. Directory for persistent caches using SQLite files (if not using Redis). Default: OS tmp dir.
 

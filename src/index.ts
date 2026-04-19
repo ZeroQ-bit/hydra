@@ -6,6 +6,7 @@ import express, { NextFunction, Request, Response } from 'express';
 // eslint-disable-next-line import/no-named-as-default
 import rateLimit from 'express-rate-limit';
 import winston from 'winston';
+import { getGeminiModel } from './ai/geminiModel';
 import { ConfigureController, ExtractController, ManifestController, StreamController } from './controller';
 import { BlockedError, logErrorAndReturnNiceString } from './error';
 import { createExtractors, ExtractorRegistry } from './extractor';
@@ -88,30 +89,42 @@ addon.use('/', (new ExtractController(logger, fetcher, extractorRegistry)).route
 addon.use('/', (new ConfigureController(sources, extractors)).router);
 addon.use('/', (new ManifestController(sources, extractors)).router);
 
+const readApiErrorMessage = async (resp: globalThis.Response): Promise<string> => {
+  const payload: unknown = await resp.json().catch(() => null);
+
+  if (payload && typeof payload === 'object' && 'error' in payload) {
+    const error = payload['error'];
+    if (error && typeof error === 'object' && 'message' in error && typeof error['message'] === 'string') {
+      return error['message'];
+    }
+  }
+
+  return 'Invalid key';
+};
+
 addon.post('/test-ai-key', express.json(), async (req: Request, res: Response) => {
   const { provider, key } = req.body;
   if (!key) return res.status(400).json({ success: false, message: 'No key provided' });
-  
+
   try {
     if (provider === 'gemini') {
-      const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:countTokens?key=${key}`, {
+      const geminiModel = getGeminiModel();
+      const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:countTokens?key=${key}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: 'test' }] }] })
+        body: JSON.stringify({ contents: [{ parts: [{ text: 'test' }] }] }),
       });
       if (resp.ok) return res.json({ success: true });
-      const error: any = await resp.json().catch(() => ({}));
-      return res.json({ success: false, message: error?.error?.message || 'Invalid key' });
+      return res.json({ success: false, message: await readApiErrorMessage(resp) });
     } else if (provider === 'openai') {
       const resp = await fetch('https://api.openai.com/v1/models', {
-        headers: { 'Authorization': `Bearer ${key}` }
+        headers: { Authorization: `Bearer ${key}` },
       });
       if (resp.ok) return res.json({ success: true });
-      const error: any = await resp.json().catch(() => ({}));
-      return res.json({ success: false, message: error?.error?.message || 'Invalid key' });
+      return res.json({ success: false, message: await readApiErrorMessage(resp) });
     }
-  } catch (err: any) {
-    return res.json({ success: false, message: err.message });
+  } catch (err: unknown) {
+    return res.json({ success: false, message: err instanceof Error ? err.message : 'Unknown provider error' });
   }
   return res.json({ success: false, message: 'Unknown provider' });
 });
