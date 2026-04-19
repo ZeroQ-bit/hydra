@@ -1,6 +1,6 @@
 import { NotFoundError } from '../error';
 import { Context, Format, InternalUrlResult, Meta, UrlResult } from '../types';
-import { Fetcher } from '../utils';
+import { CustomRequestConfig, Fetcher } from '../utils';
 
 export abstract class Extractor {
   public abstract readonly id: string;
@@ -26,6 +26,10 @@ export abstract class Extractor {
   public normalize(url: URL): URL {
     return url;
   };
+
+  public async fetchAiHtml(ctx: Context, url: URL, requestConfig?: CustomRequestConfig): Promise<string> {
+    return await this.fetcher.text(ctx, url, requestConfig);
+  }
 
   protected abstract extractInternal(ctx: Context, url: URL, meta: Meta): Promise<InternalUrlResult[]>;
 

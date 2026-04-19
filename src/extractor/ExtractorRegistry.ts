@@ -1,11 +1,13 @@
 import { Cacheable, CacheableMemory, Keyv } from 'cacheable';
 import winston from 'winston';
+import { AIFactory } from '../ai';
 import { Context, Format, Meta, UrlResult } from '../types';
 import { createKeyvSqlite, envGet, isExtractorDisabled } from '../utils';
 import { Extractor } from './Extractor';
-import { AIFactory } from '../ai';
 
 export class ExtractorRegistry {
+  private readonly AI_HTML_SNIPPET_MAX_LENGTH = 40000;
+
   private readonly logger: winston.Logger;
   private readonly extractors: Extractor[];
 
@@ -85,7 +87,19 @@ export class ExtractorRegistry {
     if (urlResults.length === 0 && aiProvider) {
       this.logger.info(`[AI Tracker] ${extractor.label} returned 0 results. Firing AI fallback...`, ctx);
       try {
-        const aiUrl = await aiProvider.extractVideoUrl('', normalizedUrl.href); // Currently uses blank HTML payload mapping, TODO: Expand Fetcher injects
+        let htmlSnippet = '';
+
+        try {
+          htmlSnippet = this.toAiHtmlSnippet(await extractor.fetchAiHtml(ctx, normalizedUrl, {
+            headers: {
+              ...(mergedMeta.referer && { Referer: mergedMeta.referer }),
+            },
+          }));
+        } catch (error) {
+          this.logger.info(`[AI Tracker] Could not fetch HTML for ${normalizedUrl.href} before AI fallback: ${error}`, ctx);
+        }
+
+        const aiUrl = await aiProvider.extractVideoUrl(htmlSnippet, normalizedUrl.href);
         if (aiUrl) {
           urlResults = [{
             url: new URL(aiUrl),
@@ -96,7 +110,7 @@ export class ExtractorRegistry {
             meta: mergedMeta,
           }];
         }
-      } catch (err) {
+      } catch {
         this.logger.error(`[AI Tracker] AI extraction failed for ${normalizedUrl.href}`, ctx);
       }
     }
@@ -129,5 +143,18 @@ export class ExtractorRegistry {
     }
 
     return `${extractor.id}_${url}${suffix}`;
+  }
+
+  private toAiHtmlSnippet(html: string): string {
+    if (html.length <= this.AI_HTML_SNIPPET_MAX_LENGTH) {
+      return html;
+    }
+
+    const sideLength = Math.floor(this.AI_HTML_SNIPPET_MAX_LENGTH / 2);
+    return [
+      html.slice(0, sideLength),
+      '\n<!-- hydra-ai-truncated -->\n',
+      html.slice(-sideLength),
+    ].join('');
   }
 }
